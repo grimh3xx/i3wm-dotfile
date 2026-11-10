@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# tocando agora (playerctl). clique: play/pause · direito: próxima · scroll: volume do player
+case $BLOCK_BUTTON in
+  1) playerctl play-pause ;;
+  3) playerctl next ;;
+  4) playerctl volume 0.05+ ;;
+  5) playerctl volume 0.05- ;;
+esac
+st=$(playerctl status 2>/dev/null) || exit 0
+t=$(playerctl metadata --format '{{artist}} - {{title}}' 2>/dev/null)
+[[ -z $t || $t == " - " ]] && exit 0
+(( ${#t} > 45 )) && t="${t:0:44}…"
+icon="󰏤"; [[ $st == Playing ]] && icon="󰎈"
+t=${t//&/&amp;}; t=${t//</&lt;}
+echo "$icon $t"

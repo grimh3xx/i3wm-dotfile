@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# uso + temp da CPU. persist: lê /proc/stat a cada 2s. sensor: k10temp/zenpower (AMD) ou coretemp (Intel)
+temp_file=""
+for h in /sys/class/hwmon/hwmon*; do
+  case $(cat "$h/name" 2>/dev/null) in k10temp|zenpower|coretemp) temp_file=$h/temp1_input; break ;; esac
+done
+read -r _ a b c idle rest < /proc/stat; prev_t=$((a+b+c+idle)); prev_i=$idle
+while sleep 2; do
+  read -r _ a b c idle rest < /proc/stat; t=$((a+b+c+idle))
+  dt=$((t-prev_t)); di=$((idle-prev_i)); prev_t=$t; prev_i=$idle
+  u=$(( dt > 0 ? 100*(dt-di)/dt : 0 ))
+  temp=$(( $(cat "$temp_file" 2>/dev/null || echo 0) / 1000 ))
+  c="#d4d4dc"; (( u > 70 || temp > 75 )) && c="#d8a657"; (( u > 90 || temp > 85 )) && c="#e06c75"
+  printf "<span color='#22c7d8'></span> <span color='%s'>%d%% %d°</span>\n" "$c" "$u" "$temp"
+done

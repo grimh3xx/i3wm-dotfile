@@ -1,0 +1,8 @@
+*.bak
+*.bak*
+*.orig
+*.rej
+/tmp/
+# imagens com direitos autorais nunca entram no repo (o script baixa na sua máquina)
+**/logos/linus.png
+**/logos/fsociety.png

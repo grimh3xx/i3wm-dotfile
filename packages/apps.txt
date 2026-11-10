@@ -1,0 +1,15 @@
+# apps de terminal (perfil full)
+lf
+btop
+cava
+weechat
+newsboat
+zathura
+zathura-pdf-mupdf
+nsxiv
+mpv
+tmux
+ncspot
+nano
+file
+unzip

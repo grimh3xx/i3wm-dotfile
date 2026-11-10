@@ -1,0 +1,28 @@
+# UNDERGROUND // i3status — rótulos minúsculos, cor só quando importa
+general {
+    colors = true
+    color_good = "#22c7d8"
+    color_degraded = "#d8a657"
+    color_bad = "#e06c75"
+    interval = 2
+    output_format = "i3bar"
+    separator = " // "
+}
+
+order += "ethernet _first_"
+order += "wireless _first_"
+order += "disk /"
+order += "memory"
+order += "cpu_usage"
+order += "cpu_temperature 0"
+order += "volume master"
+order += "tztime local"
+
+ethernet _first_ { format_up = "󰈀 %ip" format_down = "" }
+wireless _first_ { format_up = "󰖩 %essid" format_down = "" }
+disk "/" { format = "󰋊 %avail" low_threshold = 10 threshold_type = percentage_avail }
+memory { format = " %used" threshold_degraded = "10%" threshold_critical = "5%" }
+cpu_usage { format = " %usage" degraded_threshold = 70 max_threshold = 90 }
+cpu_temperature 0 { format = " %degrees°" max_threshold = 85 path = "/sys/class/hwmon/hwmon*/temp1_input" }
+volume master { format = "󰕾 %volume" format_muted = "󰖁 mute" device = "pulse" }
+tztime local { format = "%a %d/%m  %H:%M" }

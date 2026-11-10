@@ -1,0 +1,29 @@
+name: Bug report
+description: Something doesn't work as expected
+labels: [bug]
+body:
+  - type: textarea
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Run ...
+        2. Press ...
+  - type: input
+    attributes:
+      label: Version
+      placeholder: "output of: underground-i3 --version (or commit hash)"
+  - type: input
+    attributes:
+      label: OS / environment
+      placeholder: "e.g. Arch Linux 6.12, NVIDIA 570, SDDM"
+  - type: textarea
+    attributes:
+      label: Logs or output
+      render: text
+      description: "Output of `underground-i3 doctor` and the end of `~/.local/state/underground-i3/underground-i3.log`."

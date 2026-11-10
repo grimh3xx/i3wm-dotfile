@@ -1,0 +1,33 @@
+# UNDERGROUND // starship — prompt clássico de uma linha
+#   user@host ~/path  branch $
+add_newline = false
+format = "$username$hostname$directory$git_branch$git_status$character"
+
+[username]
+show_always = true
+style_user = "bold #ff2222"
+style_root = "bold #ff2222"
+format = "[$user]($style)"
+
+[hostname]
+ssh_only = false
+style = "bold #ff2222"
+format = "[@$hostname]($style) "
+
+[directory]
+style = "bold #33a9e0"
+truncation_length = 3
+format = "[$path]($style) "
+
+[git_branch]
+symbol = " "
+style = "#d9a05b"
+format = "[$symbol$branch]($style) "
+
+[git_status]
+style = "#e06c75"
+format = "[$all_status$ahead_behind]($style) "
+
+[character]
+success_symbol = "[\\$](bold #ffffff)"
+error_symbol = "[\\$](bold #ffffff)"

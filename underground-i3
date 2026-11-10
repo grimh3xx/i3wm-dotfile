@@ -1,0 +1,169 @@
+#!/usr/bin/env bash
+# UndergroundI3 — an i3wm rice for Arch Linux, in plain Bash.
+# https://github.com/grimh3xx/UndergroundI3   ·   MIT license
+set -Eeuo pipefail
+
+UG_ROOT="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
+# shellcheck source=lib/common.sh
+source "$UG_ROOT/lib/common.sh"
+# shellcheck source=lib/tui.sh
+source "$UG_ROOT/lib/tui.sh"
+# shellcheck source=lib/backup.sh
+source "$UG_ROOT/lib/backup.sh"
+# shellcheck source=lib/dotfiles.sh
+source "$UG_ROOT/lib/dotfiles.sh"
+# shellcheck source=lib/packages.sh
+source "$UG_ROOT/lib/packages.sh"
+# shellcheck source=lib/st.sh
+source "$UG_ROOT/lib/st.sh"
+# shellcheck source=lib/assets.sh
+source "$UG_ROOT/lib/assets.sh"
+# shellcheck source=lib/doctor.sh
+source "$UG_ROOT/lib/doctor.sh"
+
+usage() {
+  cat <<EOF
+usage: underground-i3 [options] [command]
+
+  (no command)               interactive installer: pick components with space, enter to go
+  install [minimal|full]     non-interactive install (default: full)
+                               minimal = core packages + st + dotfiles + wallpaper
+                               full    = minimal + terminal apps + AUR + fastfetch logos
+  packages [SET...]          core apps aur nvidia | all
+  dotfiles                   configs only (symlink or copy, with backup)
+  st                         build and install the patched st
+  assets                     fastfetch logos + default wallpaper
+  doctor                     check the install (read-only)
+  restore [ID|latest]        undo a run   (restore --list shows them)
+
+  -n, --dry-run   show everything it would do, change nothing
+  -y, --yes       answer yes to every question
+  -c, --copy      copy the dotfiles instead of symlinking them
+      --no-color  no colors
+  -V, --version   print version
+  -h, --help      this help
+
+log: $UG_LOG
+EOF
+}
+
+# ── components ───────────────────────────────────────────────────────────────
+# id|label|description|default on|locked
+components() {
+  local nv=0
+  has_nvidia && nv=1
+  printf '%s\n' \
+    "core|core|i3, X, i3blocks, rofi, dunst, picom, fonts, zsh|1|1" \
+    "st|st|suckless terminal built with 8 patches|1|0" \
+    "dotfiles|dotfiles|every config, with backup + restore|1|1" \
+    "apps|apps|lf btop cava weechat newsboat zathura mpv tmux|1|0" \
+    "aur|aur|greenclip (clipboard) + bibata cursor|1|0" \
+    "nvidia|nvidia|nvidia-settings for G-Sync on X11|$nv|0" \
+    "logos|logos|fastfetch logos (anon / linus / fsociety)|1|0" \
+    "wallpaper|wallpaper|generated 'expect us.' wallpaper|1|0" \
+    "shell|zsh|make zsh your login shell|1|0"
+}
+
+run_components() {
+  local -a sel=("$@") pk=()
+  local c
+  for c in core apps aur nvidia; do [[ " ${sel[*]} " == *" $c "* ]] && pk+=("$c"); done
+  ((${#pk[@]})) && packages_install "${pk[@]}"
+  [[ " ${sel[*]} " == *" st "* ]] && st_install
+  [[ " ${sel[*]} " == *" dotfiles "* ]] && dotfiles_install
+  [[ " ${sel[*]} " == *" logos "* ]] && assets_logos
+  [[ " ${sel[*]} " == *" wallpaper "* ]] && assets_wallpaper
+  if [[ " ${sel[*]} " == *" shell "* && ${SHELL##*/} != zsh ]] && have zsh; then
+    step "login shell"
+    run chsh -s "$(command -v zsh)"
+  fi
+  post_install
+}
+
+post_install() {
+  step "next steps"
+  info "1. log out and pick ${C_RST}i3${C_DIM} in your display manager (or 'exec i3' in ~/.xinitrc + startx)"
+  info "2. Alt+Return opens st · Alt+d search · Alt+/ lists every keybind"
+  info "3. underground-i3 doctor checks the install · restore undoes it"
+  printf '\n   %s[anon]%s %swe do not forgive. we do not forget.%s %sexpect us.%s\n\n' \
+    "$C_BLU" "$C_RST" "$C_DIM" "$C_RST" "$C_BLD" "$C_RST"
+}
+
+install_profile() {
+  case ${1:-full} in
+    minimal) run_components core st dotfiles nvidia wallpaper ;;
+    full)    run_components core st dotfiles apps aur nvidia logos wallpaper ;;
+    *)       die "unknown profile: $1 (minimal|full)" ;;
+  esac
+}
+
+logo() {
+  [[ -t 1 && -f $UG_ROOT/assets/logo.ans && -n $C_RST ]] && cat "$UG_ROOT/assets/logo.ans"
+  printf '  %sUndergroundI3%s %sv%s · i3wm rice for Arch Linux%s\n\n' "$C_BLD" "$C_RST" "$C_DIM" "$UG_VERSION" "$C_RST"
+}
+
+interactive() {
+  [[ -r /dev/tty ]] || die "no terminal for the interactive menu — use: underground-i3 install"
+  trap _tui_cleanup EXIT INT TERM
+  logo
+  local -a items
+  mapfile -t items < <(components)
+  tui_checklist "components" "pick what to install" "${items[@]}" || { info "bye."; exit 0; }
+  local -a sel=("${TUI_RESULT[@]}")
+
+  if [[ " ${sel[*]} " == *" dotfiles "* ]]; then
+    tui_radio "dotfiles" "how should the configs land in ~" \
+      "link|symlink|git pull in the repo updates your setup" \
+      "copy|copy|independent files, repo can be deleted" || { info "bye."; exit 0; }
+    UG_MODE=$TUI_CHOICE
+  fi
+
+  local -a lines=()
+  local c
+  for c in "${sel[@]}"; do lines+=("${C_GRN}✓${C_RST} $c"); done
+  lines+=("")
+  lines+=("${C_DIM}mode${C_RST}    $UG_MODE")
+  lines+=("${C_DIM}backup${C_RST}  ~/.local/state/underground-i3/backups/$UG_RUN_ID")
+  ((UG_DRY)) && lines+=("${C_CYN}dry-run: nothing will be changed${C_RST}")
+  tui_summary "plan" "${lines[@]}"
+  tui_confirm "install now?" || { info "nothing changed. bye."; exit 0; }
+  UG_YES=1
+  run_components "${sel[@]}"
+}
+
+main() {
+  local cmd=""
+  local -a args=()
+  while (($#)); do
+    case $1 in
+      -n|--dry-run) UG_DRY=1 ;;
+      -y|--yes)     UG_YES=1 ;;
+      -c|--copy)    UG_MODE=copy ;;
+      --no-color)   no_color ;;
+      --list)       args+=("--list") ;;
+      -V|--version) echo "underground-i3 $UG_VERSION"; exit 0 ;;
+      -h|--help)    usage; exit 0 ;;
+      -*)           die "unknown option: $1 (see --help)" ;;
+      *)            if [[ -z $cmd ]]; then cmd=$1; else args+=("$1"); fi ;;
+    esac
+    shift
+  done
+
+  ((EUID != 0)) || die "do not run as root. sudo is only used for pacman."
+  ((UG_DRY)) && printf '%s[dry-run] nothing will be changed%s\n' "$C_CYN" "$C_RST"
+  _log "=== run $UG_RUN_ID: ${cmd:-interactive} ${args[*]:-} (dry=$UG_DRY mode=$UG_MODE)"
+
+  case ${cmd:-menu} in
+    menu)     interactive ;;
+    install)  install_profile "${args[0]:-full}" ;;
+    packages) packages_install "${args[@]}" ;;
+    dotfiles) dotfiles_install ;;
+    st)       st_install ;;
+    assets)   assets_logos; assets_wallpaper ;;
+    doctor)   doctor ;;
+    restore)  if [[ ${args[0]:-} == --list ]]; then restore_list; else restore_run "${args[0]:-latest}"; fi ;;
+    *)        usage; die "unknown command: $cmd" ;;
+  esac
+}
+
+main "$@"

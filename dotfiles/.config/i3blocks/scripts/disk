@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+read -r avail pct < <(df -h --output=avail,pcent / | tail -1 | tr -d '%')
+c="#d4d4dc"; (( pct > 90 )) && c="#e06c75"
+echo "<span color='#22c7d8'>󰋊</span> <span color='$c'>${avail}</span>"

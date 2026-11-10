@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# chamado pelo st (Ctrl+Shift+U): recebe o texto da tela no stdin, lista os links no rofi e abre o escolhido
+url=$(grep -aEo '(https?|ftp)://[^][[:space:]<>"'"'"'()]+|www\.[^][[:space:]<>"'"'"'()]+' | tac | awk '!s[$0]++' \
+  | rofi -dmenu -i -p url -theme ~/.config/rofi/underground.rasi -theme-str 'entry{placeholder:"abre um link_";}')
+[[ -n $url ]] && setsid -f xdg-open "$url" >/dev/null 2>&1

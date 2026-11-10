@@ -1,0 +1,106 @@
+/* UNDERGROUND // rofi — prompt de terminal. usado só pelo i3 (HyDE continua com o dele) */
+configuration {
+    show-icons:          false;
+    display-drun:        "run";
+    display-run:         "exec";
+    display-window:      "win";
+    drun-display-format: "{name}";
+    disable-history:     false;
+    terminal:            "st";
+}
+
+* {
+    bg:      #101014;
+    bg2:     #17181f;
+    line:    #26272f;
+    dim:     #6b6c78;
+    fg:      #d4d4dc;
+    accent:  #1793d1;
+    cyan:    #22c7d8;
+    red:     #e06c75;
+
+    font:             "CaskaydiaCove Nerd Font 11";
+    background-color: transparent;
+    text-color:       @fg;
+    margin:  0;
+    padding: 0;
+    spacing: 0;
+}
+
+window {
+    width:            640px;
+    location:         center;
+    anchor:           center;
+    background-color: @bg;
+    border:           2px;
+    border-color:     @accent;
+    border-radius:    0;
+}
+
+mainbox {
+    padding:  0;
+    children: [ "header", "inputbar", "listview" ];
+}
+
+header {
+    orientation:      horizontal;
+    padding:          6px 12px;
+    background-color: @bg2;
+    border:           0 0 1px 0;
+    border-color:     @line;
+    children:         [ "textbox-tag", "textbox-motto" ];
+}
+textbox-tag {
+    expand:     false;
+    str:        "[anon] ";
+    text-color: @accent;
+}
+textbox-motto {
+    str:        "we do not forgive. we do not forget.";
+    text-color: @dim;
+}
+
+inputbar {
+    padding:  10px 12px;
+    spacing:  8px;
+    children: [ "prompt", "textbox-arrow", "entry" ];
+}
+prompt { text-color: @cyan; }
+textbox-arrow { expand: false; str: "›"; text-color: @accent; }
+entry  {
+    placeholder:       "expect us_";
+    placeholder-color: @dim;
+    cursor:            text;
+}
+
+listview {
+    lines:        10;
+    columns:      1;
+    fixed-height: true;
+    scrollbar:    false;
+    border:       1px 0 0 0;
+    border-color: @line;
+    padding:      4px 0;
+}
+
+element {
+    padding: 4px 12px;
+}
+element-text {
+    text-color:       inherit;
+    highlight:        bold #22c7d8;
+    vertical-align:   0.5;
+}
+element normal.normal, element alternate.normal { text-color: @dim; }
+element selected.normal {
+    background-color: @accent;
+    text-color:       @bg;
+}
+element normal.urgent, element alternate.urgent { text-color: @red; }
+element selected.urgent { background-color: @red; text-color: @bg; }
+element normal.active, element alternate.active { text-color: @cyan; }
+element selected.active { background-color: @cyan; text-color: @bg; }
+
+message  { padding: 6px 12px; border: 1px 0 0 0; border-color: @line; }
+textbox  { text-color: @dim; }
+error-message { padding: 12px; background-color: @bg; }

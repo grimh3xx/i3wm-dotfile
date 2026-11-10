@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# frase do Anonymous (~2011), uma linha por vez. clique = próxima
+lines=("we are anonymous." "we are legion." "we do not forgive." "we do not forget." "expect us.")
+state=/tmp/i3blocks-anon-$UID
+i=$(cat "$state" 2>/dev/null || echo 0)
+i=$(( (i + 1) % ${#lines[@]} ))   # gira a cada 30s e a cada clique
+echo "$i" > "$state"
+echo "<span color='#1793d1'>[anon]</span> <span color='#6b6c78'>${lines[$i]}</span>"

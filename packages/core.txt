@@ -1,0 +1,66 @@
+# núcleo: i3 + X + barra + launcher + notificações + compositor
+xorg-server
+xorg-xinit
+xorg-xrandr
+xorg-xrdb
+xorg-xsetroot
+xorg-xset
+i3-wm
+i3blocks
+i3status
+i3lock
+xss-lock
+picom
+rofi
+rofi-calc
+rofimoji
+dunst
+libnotify
+feh
+dex
+polkit-gnome
+xdg-desktop-portal-gtk
+xdg-utils
+network-manager-applet
+udiskie
+redshift
+# st (compilado do código) + terminal reserva
+base-devel
+git
+libxft
+harfbuzz
+fontconfig
+kitty
+# fontes / temas
+ttf-cascadia-code-nerd
+noto-fonts-emoji
+gnome-themes-extra
+papirus-icon-theme
+qt6ct
+# shell
+zsh
+zsh-syntax-highlighting
+starship
+fastfetch
+chafa
+fzf
+zoxide
+eza
+bat
+# áudio / mídia / prints
+pipewire
+pipewire-pulse
+wireplumber
+pamixer
+pavucontrol
+playerctl
+maim
+xclip
+flameshot
+imagemagick
+# ferramentas usadas pelos scripts
+jq
+python
+curl
+iw
+bc

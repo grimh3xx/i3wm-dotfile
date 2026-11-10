@@ -1,0 +1,3 @@
+# AUR (instalado com paru/yay, como usuário)
+rofi-greenclip
+bibata-cursor-theme-bin

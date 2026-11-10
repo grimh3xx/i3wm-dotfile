@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# RTX: uso + temp + vram
+IFS=', ' read -r u t mu _ < <(nvidia-smi --query-gpu=utilization.gpu,temperature.gpu,memory.used,memory.total --format=csv,noheader,nounits 2>/dev/null) || exit 0
+[[ -z $u ]] && exit 0
+c="#d4d4dc"; (( t > 75 )) && c="#d8a657"; (( t > 85 )) && c="#e06c75"
+printf "<span color='#22c7d8'>󰢮</span> <span color='%s'>%d%% %d°</span> <span color='#6b6c78'>%.1fG</span>\n" "$c" "$u" "$t" "$(awk -v m="$mu" 'BEGIN{print m/1024}')"
