@@ -18,10 +18,10 @@ jobs:
     runs-on: ubuntu-latest
     container: archlinux:latest
     steps:
-      - name: dependências
+      - name: dependencies
         run: pacman -Syu --noconfirm --needed bash git make shellcheck i3-wm diffutils findutils
       - uses: actions/checkout@v4
-      - name: testes (como usuário comum)
+      - name: tests (as a regular user)
         run: |
           useradd -m tester
           chown -R tester "$GITHUB_WORKSPACE"

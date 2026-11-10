@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# chamado pelo st (Ctrl+Shift+U): recebe o texto da tela no stdin, lista os links no rofi e abre o escolhido
+# called by st (Ctrl+Shift+U): reads the screen text on stdin, lists links in rofi and opens the one you pick
 url=$(grep -aEo '(https?|ftp)://[^][[:space:]<>"'"'"'()]+|www\.[^][[:space:]<>"'"'"'()]+' | tac | awk '!s[$0]++' \
-  | rofi -dmenu -i -p url -theme ~/.config/rofi/underground.rasi -theme-str 'entry{placeholder:"abre um link_";}')
+  | rofi -dmenu -i -p url -theme ~/.config/rofi/underground.rasi -theme-str 'entry{placeholder:"open a link_";}')
 [[ -n $url ]] && setsid -f xdg-open "$url" >/dev/null 2>&1

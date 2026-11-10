@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# caffeine: clique liga/desliga. ligado = tela não apaga nem trava sozinha
+# caffeine: click toggles. on = the screen never blanks or locks by itself
 state=/tmp/caffeine-$UID
 if [[ $BLOCK_BUTTON == 1 ]]; then
   if [[ -f $state ]]; then rm -f "$state"; xset s 480 480 dpms 600 600 600

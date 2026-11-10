@@ -1,7 +1,6 @@
 // ═══════════════════════════════════════════════════════════════
-//  UNDERGROUND // fastfetch — layout em árvore
-//  o logo é sorteado pelo ~/.config/fastfetch/logo.sh (linus / anon / fsociety)
-//  backup do antigo (logo do arch): config.jsonc.bak-arch
+//  UNDERGROUND // fastfetch — tree layout
+//  the logo is picked at random by ~/.config/fastfetch/logo.sh (linus / anon / fsociety)
 // ═══════════════════════════════════════════════════════════════
 {
   "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",

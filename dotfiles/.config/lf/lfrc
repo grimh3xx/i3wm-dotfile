@@ -1,4 +1,4 @@
-# UNDERGROUND // lf — gerenciador de arquivos no terminal
+# UNDERGROUND // lf — terminal file manager
 set hidden false
 set icons true
 set drawbox true
@@ -13,7 +13,7 @@ set shell bash
 set shellopts '-eu'
 set ifs "\n"
 
-# abrir: texto no nano, resto no app padrão
+# open: text in nano, everything else in the default app
 cmd open ${{
   case $(file --mime-type -Lb "$f") in
     text/*|application/json|inode/x-empty) nano "$f" ;;

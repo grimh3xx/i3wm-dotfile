@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# UndergroundI3 — an i3wm rice for Arch Linux, in plain Bash.
-# https://github.com/grimh3xx/UndergroundI3   ·   MIT license
+# i3wm-dotfile — an i3wm rice for Arch Linux, in plain Bash.
+# https://github.com/grimh3xx/i3wm-dotfile   ·   MIT license
 set -Eeuo pipefail
 
 UG_ROOT="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
@@ -99,7 +99,7 @@ install_profile() {
 
 logo() {
   [[ -t 1 && -f $UG_ROOT/assets/logo.ans && -n $C_RST ]] && cat "$UG_ROOT/assets/logo.ans"
-  printf '  %sUndergroundI3%s %sv%s · i3wm rice for Arch Linux%s\n\n' "$C_BLD" "$C_RST" "$C_DIM" "$UG_VERSION" "$C_RST"
+  printf '  %si3wm-dotfile%s %sv%s · i3wm rice for Arch Linux%s\n\n' "$C_BLD" "$C_RST" "$C_DIM" "$UG_VERSION" "$C_RST"
 }
 
 interactive() {

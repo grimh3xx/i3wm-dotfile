@@ -1,4 +1,4 @@
-# UNDERGROUND // dunst — só no i3 (dunst -config ~/.config/dunst-i3/dunstrc)
+# UNDERGROUND // dunst — started by i3 with: dunst -config ~/.config/dunst-i3/dunstrc
 [global]
     monitor = 0
     follow = keyboard

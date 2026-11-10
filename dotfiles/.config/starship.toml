@@ -1,4 +1,4 @@
-# UNDERGROUND // starship — prompt clássico de uma linha
+# UNDERGROUND // starship — classic one-line prompt
 #   user@host ~/path  branch $
 add_newline = false
 format = "$username$hostname$directory$git_branch$git_status$character"

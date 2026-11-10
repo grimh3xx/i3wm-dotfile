@@ -11,8 +11,8 @@ import base64, io, sys
 from fontTools import subset
 from fontTools.ttLib import TTFont
 
-TITLE = "UndergroundI3"
-SUBTITLE = "Rice de i3wm underground pro Arch Linux, instalado com um script"
+TITLE = "i3wm-dotfile"
+SUBTITLE = "Underground i3wm setup for Arch Linux, installed with one script"
 PILLS = [("Shell", "#89E051"), ("Arch Linux", None), ("i3wm", None), ("suckless st", None), ("dotfiles", None)]
 
 MONO = "'JBM','JetBrains Mono',ui-monospace,Consolas,Menlo,monospace"

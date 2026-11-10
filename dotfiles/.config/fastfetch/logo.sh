@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# sorteia um logo (linus / anon / fsociety) e roda o fastfetch.
-# kitty mostra a foto de verdade; st e o resto mostram em blocos (chafa)
+# picks a random logo (linus / anon / fsociety) and runs fastfetch.
+# kitty shows the real picture; st and other terminals get unicode blocks (chafa)
 L=~/.config/fastfetch/logos
 shopt -s nullglob
 pics=("$L"/*.png)

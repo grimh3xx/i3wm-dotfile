@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
-# Alt+s — busca na web. prefixos: g google · aw arch wiki · aur · yt youtube · gh github · w wikipedia · (nada) duckduckgo
-help="g <termo>  google
-aw <termo> arch wiki
+# Alt+o — web search. prefixes: g google · aw arch wiki · aur · yt youtube · gh github · w wikipedia · (none) duckduckgo
+help="g <term>   google
+aw <term>  arch wiki
 aur <pkg>  aur
-yt <termo> youtube
-gh <termo> github
-w <termo>  wikipedia
-<termo>    duckduckgo"
+yt <term>  youtube
+gh <term>  github
+w <term>   wikipedia
+<term>     duckduckgo"
 q=$(printf '%s\n' "$help" | rofi -dmenu -i -p web -theme ~/.config/rofi/underground.rasi \
-  -theme-str 'entry{placeholder:"busca na web_";} listview{lines:7;}' ) || exit 0
+  -theme-str 'entry{placeholder:"search the web_";} listview{lines:7;}' ) || exit 0
 [[ -z $q ]] && exit 0
-# se escolheu uma linha da ajuda, não faz nada
+# picking one of the help lines does nothing
 grep -qxF -- "$q" <<<"$help" && exit 0
 pre=${q%% *}; rest=${q#* }; [[ $rest == "$q" ]] && rest=""
 enc() { python3 -c 'import sys,urllib.parse;print(urllib.parse.quote_plus(sys.argv[1]))' "$1"; }

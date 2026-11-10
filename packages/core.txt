@@ -1,4 +1,4 @@
-# núcleo: i3 + X + barra + launcher + notificações + compositor
+# core: i3 + X + bar + launcher + notifications + compositor
 xorg-server
 xorg-xinit
 xorg-xrandr
@@ -24,14 +24,14 @@ xdg-utils
 network-manager-applet
 udiskie
 redshift
-# st (compilado do código) + terminal reserva
+# st (built from source) + backup terminal
 base-devel
 git
 libxft
 harfbuzz
 fontconfig
 kitty
-# fontes / temas
+# fonts / themes
 ttf-cascadia-code-nerd
 noto-fonts-emoji
 gnome-themes-extra
@@ -47,7 +47,7 @@ fzf
 zoxide
 eza
 bat
-# áudio / mídia / prints
+# audio / media / screenshots
 pipewire
 pipewire-pulse
 wireplumber
@@ -58,7 +58,7 @@ maim
 xclip
 flameshot
 imagemagick
-# ferramentas usadas pelos scripts
+# tools used by the scripts
 jq
 python
 curl

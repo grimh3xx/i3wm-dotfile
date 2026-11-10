@@ -1,2 +1,2 @@
-# só se tiver GPU NVIDIA
+# only when an NVIDIA GPU is present
 nvidia-settings

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# uso + temp da CPU. persist: lê /proc/stat a cada 2s. sensor: k10temp/zenpower (AMD) ou coretemp (Intel)
+# CPU usage + temp. persist: reads /proc/stat every 2s. sensor: k10temp/zenpower (AMD) or coretemp (Intel)
 temp_file=""
 for h in /sys/class/hwmon/hwmon*; do
   case $(cat "$h/name" 2>/dev/null) in k10temp|zenpower|coretemp) temp_file=$h/temp1_input; break ;; esac

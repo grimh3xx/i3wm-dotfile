@@ -1,7 +1,7 @@
 Xcursor.theme: Bibata-Modern-Ice
 Xcursor.size: 24
 
-! fonte nítida no X (3440x1440, 96 dpi)
+! crisp fonts on X (96 dpi)
 Xft.dpi: 96
 Xft.antialias: true
 Xft.hinting: true
@@ -9,7 +9,7 @@ Xft.hintstyle: hintslight
 Xft.rgba: rgb
 Xft.lcdfilter: lcddefault
 
-! ── UNDERGROUND // paleta (st, nsxiv e quem mais ler Xresources) ──
+! ── UNDERGROUND // palette (st, nsxiv and anything else that reads Xresources) ──
 *.foreground:  #d4d4dc
 *.background:  #101014
 *.cursorColor: #ffffff

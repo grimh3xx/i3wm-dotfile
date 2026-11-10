@@ -1,4 +1,4 @@
-# UNDERGROUND // i3status — rótulos minúsculos, cor só quando importa
+# UNDERGROUND // i3status — fallback bar when i3blocks is missing. color only when it matters
 general {
     colors = true
     color_good = "#22c7d8"

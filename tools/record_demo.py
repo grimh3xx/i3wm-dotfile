@@ -20,7 +20,7 @@ CW, RH, FS = 8.4, 18, 14          # char width, row height, font size
 PAD_X, PAD_TOP = 18, 58
 FRAME_H = ROWS * RH
 HOME_FAKE = "/home/you"
-PROMPT = [("anon@underground", "#22D3EE"), (":", "#D5DDE8"), ("~/UndergroundI3", "#60A5FA"), ("$ ", "#D5DDE8")]
+PROMPT = [("anon@underground", "#22D3EE"), (":", "#D5DDE8"), ("~/i3wm-dotfile", "#60A5FA"), ("$ ", "#D5DDE8")]
 COMMAND = "./underground-i3 --dry-run"
 
 # ANSI → grimh3xx palette (same tones as SecureArchSetup/usbscope demos)
@@ -199,7 +199,7 @@ def write_svg(rec, out):
         uses = "".join(f'<use href="#{rowid[row]}" y="{y*RH}"/>' for y, row in enumerate(snap) if row)
         strip.append(f'<g transform="translate(0,{i*FRAME_H})">{uses}</g>')
 
-    text = "".join(sorted(chars)) + "UndergroundI3 --dry-run"
+    text = "".join(sorted(chars)) + "i3wm-dotfile --dry-run"
     reg, bld = font_b64(FONT_REG, text), font_b64(FONT_BLD, text)
     W = int(PAD_X * 2 + COLS * CW)
     H = PAD_TOP + FRAME_H + 18

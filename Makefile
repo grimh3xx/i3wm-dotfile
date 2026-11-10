@@ -1,12 +1,12 @@
-# UndergroundI3
+# i3wm-dotfile
 .PHONY: help lint test dry-run install doctor
 
 help:
-	@echo "make lint     shellcheck em tudo"
-	@echo "make test     testes num \$$HOME temporário"
-	@echo "make dry-run  mostra o que o 'install full' faria"
-	@echo "make install  link do comando em ~/.local/bin/underground-i3"
-	@echo "make doctor   confere a instalação"
+	@echo "make lint     shellcheck everything"
+	@echo "make test     run the tests in a throwaway \$$HOME"
+	@echo "make dry-run  show what 'install full' would do"
+	@echo "make install  link the command into ~/.local/bin/underground-i3"
+	@echo "make doctor   check the install"
 
 lint:
 	shellcheck -x underground-i3 lib/*.sh st/st-urls

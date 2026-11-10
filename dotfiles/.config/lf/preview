@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# preview do lf: texto com highlight, pasta listada, resto mostra o tipo
+# lf preview: highlighted text, archive listings, file type for everything else
 f=$1
 case $(file --mime-type -Lb "$f") in
   text/*|application/json) command -v bat >/dev/null && bat --color=always --style=plain --paging=never "$f" || head -200 "$f" ;;

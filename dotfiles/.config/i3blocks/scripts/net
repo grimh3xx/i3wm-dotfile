@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# interface padrão: wifi mostra o SSID, cabo mostra o IP. clique = copia o IP
+# default route interface: wifi shows the SSID, ethernet shows the IP. click = copy the IP
 dev=$(ip route show default 2>/dev/null | awk '{print $5; exit}')
 [[ -z $dev ]] && { echo "<span color='#e06c75'>󰖪 offline</span>"; exit 0; }
 ip4=$(ip -4 -o addr show "$dev" | awk '{print $4}' | cut -d/ -f1 | head -1)

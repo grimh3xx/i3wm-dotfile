@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# tocando agora (playerctl). clique: play/pause · direito: próxima · scroll: volume do player
+# now playing (playerctl). click: play/pause · right click: next · scroll: player volume
 case $BLOCK_BUTTON in
   1) playerctl play-pause ;;
   3) playerctl next ;;

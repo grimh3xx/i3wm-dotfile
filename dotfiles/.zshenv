@@ -1,2 +1,2 @@
-# ~/.local/bin no PATH em qualquer sessão (st e scripts do UndergroundI3 moram lá)
+# ~/.local/bin on PATH in every session (st and the i3wm-dotfile scripts live there)
 [[ ":$PATH:" != *":$HOME/.local/bin:"* ]] && export PATH="$HOME/.local/bin:$PATH"

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# pula pro primeiro workspace vazio (1-20). com "move", leva a janela junto
+# jump to the first empty workspace (1-20). with "move", the focused window comes along
 used=$(i3-msg -t get_workspaces | jq '.[].num')
 for n in $(seq 1 20); do
   grep -qx "$n" <<<"$used" && continue

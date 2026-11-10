@@ -1,4 +1,4 @@
-# UNDERGROUND // ncspot — spotify no terminal (precisa de Spotify Premium)
+# UNDERGROUND // ncspot — spotify in the terminal (needs Spotify Premium)
 use_nerdfont = true
 flip_status_indicators = false
 notify = true

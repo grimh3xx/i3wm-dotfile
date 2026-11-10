@@ -52,16 +52,3 @@ have() { command -v "$1" >/dev/null 2>&1; }
 
 # package list from a file (skips comments and blank lines)
 read_list() { grep -vE '^\s*(#|$)' "$1" | awk '{print $1}'; }
-
-banner() {
-  printf '%s' "$C_BLU"
-  cat <<'EOF'
-   _   _           _                                           _ ___ _____
-  | | | |_ __   __| | ___ _ __ __ _ _ __ ___  _   _ _ __   __| |_ _|___ /
-  | | | | '_ \ / _` |/ _ \ '__/ _` | '__/ _ \| | | | '_ \ / _` || |  |_ \
-  | |_| | | | | (_| |  __/ | | (_| | | | (_) | |_| | | | | (_| || | ___) |
-   \___/|_| |_|\__,_|\___|_|  \__, |_|  \___/ \__,_|_| |_|\__,_|___|____/
-                              |___/
-EOF
-  printf '%s  [anon]%s we do not forgive. we do not forget. %sexpect us.%s\n' "$C_BLU" "$C_DIM" "$C_RST" "$C_RST"
-}

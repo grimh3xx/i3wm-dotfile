@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# clique: mute · direito: pavucontrol · scroll: ±5. atualiza na hora via sinal 10
+# click: mute · right click: pavucontrol · scroll: ±5. updates instantly via signal 10
 case $BLOCK_BUTTON in
   1) pamixer -t ;;
   3) (pavucontrol >/dev/null 2>&1 &) ;;

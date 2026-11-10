@@ -1,10 +1,10 @@
 #!/bin/sh
-# monitor principal na resolução nativa e na MAIOR taxa de atualização disponível.
-# NVIDIA: liga G-Sync compatível. o nome da saída (DP-0, HDMI-1...) é detectado sozinho.
-# pra forçar: UG_OUTPUT=DP-2 UG_MODE=3440x1440 no ~/.xprofile
+# primary monitor at its native resolution and the HIGHEST refresh rate available.
+# NVIDIA: enables G-Sync compatible. the output name (DP-0, HDMI-1...) is detected.
+# to force it: UG_OUTPUT=DP-2 UG_MODE=3440x1440 in ~/.xprofile
 command -v xrandr >/dev/null || exit 0
 
-# shellcheck disable=SC2046  # split intencional: "saída modo taxa"
+# shellcheck disable=SC2046  # intentional split: "output mode rate"
 set -- $(xrandr | awk -v want_out="$UG_OUTPUT" -v want_mode="$UG_MODE" '
   / connected/ {
     out = $1
@@ -16,7 +16,7 @@ set -- $(xrandr | awk -v want_out="$UG_OUTPUT" -v want_mode="$UG_MODE" '
   / disconnected/ { out = ""; next }
   out && /^ +[0-9]+x[0-9]+/ {
     mode = $1
-    if (!(out in nat)) nat[out] = mode                  # 1ª linha = resolução nativa
+    if (!(out in nat)) nat[out] = mode                  # first line = native resolution
     target = (want_mode != "") ? want_mode : nat[out]
     if (mode != target) next
     for (i = 2; i <= NF; i++) { r = $i; gsub(/[*+]/, "", r)

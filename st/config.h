@@ -107,7 +107,7 @@ unsigned int tabspaces = 8;
 
 /* Terminal colors (16 first used in escape sequence) */
 static const char *colorname[] = {
-	/* UNDERGROUND — mesma paleta do kitty (sobrescrita pelo ~/.Xresources) */
+	/* UNDERGROUND — same palette as kitty (overridden by ~/.Xresources) */
 	"#17181f", /* 0 black   */
 	"#e06c75", /* 1 red     */
 	"#00b300", /* 2 green   */
@@ -198,7 +198,7 @@ static MouseShortcut mshortcuts[] = {
 #define MODKEY Mod1Mask
 #define TERMMOD (ControlMask|ShiftMask)
 
-/* Ctrl+Shift+U: links da tela no rofi → abre no navegador */
+/* Ctrl+Shift+U: links on screen → rofi → browser */
 static char *urlcmd[] = { "/bin/sh", "-c", "~/.local/bin/st-urls", NULL };
 
 static Shortcut shortcuts[] = {

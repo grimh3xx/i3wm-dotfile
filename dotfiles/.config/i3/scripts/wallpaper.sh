@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Alt+w — escolhe wallpaper (com miniatura) de ~/Pictures/Wallpapers. salva em ~/.config/i3/wallpaper
+# Alt+Shift+w — pick a wallpaper (with thumbnails) from ~/Pictures/Wallpapers. saved as ~/.config/i3/wallpaper
 dir=~/Pictures/Wallpapers
 pick=$(find "$dir" -maxdepth 2 -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \) -printf '%f\000icon\037%p\n' | sort \
   | rofi -dmenu -i -p wall -show-icons -theme ~/.config/rofi/underground.rasi \

@@ -1,4 +1,4 @@
-# apps de terminal (perfil full)
+# terminal apps (full profile)
 lf
 btop
 cava

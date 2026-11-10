@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# UNDERGROUND // lock — print da tela pixelado + escurecido, com a frase. -n = espera desbloquear (xss-lock)
+# UNDERGROUND // lock — pixelated, darkened screenshot with the quote. -n = wait for unlock (xss-lock)
 img=/tmp/i3lock-$UID.png
 font=$(fc-match -f '%{file}' 'CaskaydiaCove Nerd Font Mono:bold')
 maim -u "$img" 2>/dev/null || { exec i3lock "$@" -c 101014; }

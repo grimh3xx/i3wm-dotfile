@@ -3,8 +3,8 @@
 *.orig
 *.rej
 /tmp/
-# imagens com direitos autorais nunca entram no repo (o script baixa na sua máquina)
+# copyrighted images never go in the repo (the installer downloads them locally)
 **/logos/linus.png
 **/logos/fsociety.png
-# gerado na instalação (symlink pro wallpaper escolhido)
+# created at install time (symlink to the chosen wallpaper)
 dotfiles/.config/i3/wallpaper

@@ -1,4 +1,4 @@
-/* UNDERGROUND // rofi — prompt de terminal. usado só pelo i3 (HyDE continua com o dele) */
+/* UNDERGROUND // rofi — looks like a terminal prompt */
 configuration {
     show-icons:          false;
     display-drun:        "run";

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# microfone: clique = muta/desmuta · direito = pavucontrol (aba entrada). sinal 11
+# microphone: click = mute/unmute · right click = pavucontrol (input tab). signal 11
 case $BLOCK_BUTTON in
   1) pactl set-source-mute @DEFAULT_SOURCE@ toggle ;;
   3) (pavucontrol -t 4 >/dev/null 2>&1 &) ;;

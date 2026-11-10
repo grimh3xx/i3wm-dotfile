@@ -27,6 +27,6 @@ set index-bg "#101014"
 set index-fg "#d4d4dc"
 set index-active-bg "#1793d1"
 set index-active-fg "#101014"
-# i = inverte cores (modo escuro on/off)
+# i = invert colors (dark mode on/off)
 map i recolor
 map r reload
