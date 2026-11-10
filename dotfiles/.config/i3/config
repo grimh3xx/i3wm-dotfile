@@ -1,15 +1,15 @@
 # ═══════════════════════════════════════════════════════════════
 #  UNDERGROUND // i3
-#  palette = kitty underground.conf · bg #101014 · arch #1793d1 · cyan #22c7d8
-#  reload: Alt+Shift+x   restart: Alt+Shift+r   keybind list: Alt+/
+#  paleta = kitty underground.conf · bg #101014 · arch #1793d1 · cyan #22c7d8
+#  reload: Super+Shift+c   restart: Super+Shift+r   backup: config.bak
 # ═══════════════════════════════════════════════════════════════
 
-# mod = Alt (Mod1). for Super use Mod4
+# mod = Alt (Mod1). pra voltar pro Super: Mod4
 set $mod Mod1
 set $term st
 font pango:CaskaydiaCove Nerd Font 10
 
-# ── palette ────────────────────────────────────────────────────
+# ── paleta ─────────────────────────────────────────────────────
 set $bg      #101014
 set $bg2     #17181f
 set $line    #26272f
@@ -26,20 +26,20 @@ exec --no-startup-id xset r rate 250 40
 exec --no-startup-id xss-lock --transfer-sleep-lock -- ~/.config/i3/scripts/lock.sh -n
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec --no-startup-id dunst -config ~/.config/dunst-i3/dunstrc
-# XDG autostart apps (blueman, nm-applet, Discord/Steam if set to "open on startup"...)
-# the XDG picom entry is hidden in ~/.config/autostart/picom.desktop (we start our own)
+# apps do autostart XDG (blueman, nm-applet, Discord/Steam se marcar "abrir ao iniciar"...)
+# o picom do autostart está desligado em ~/.config/autostart/picom.desktop (usamos o nosso)
 exec --no-startup-id dex --autostart --environment i3
 exec --no-startup-id greenclip daemon
 exec --no-startup-id redshift -c ~/.config/redshift/redshift.conf
 exec --no-startup-id udiskie --smart-tray --notify
-# idle: lock after 8 min (xss-lock runs lock.sh), monitor off after 10
+# tela: escurece/trava aos 8 min parado (xss-lock chama o lock.sh), desliga o monitor aos 10
 exec --no-startup-id xset s 480 480 dpms 600 600 600
 exec --no-startup-id picom --config ~/.config/picom-i3/picom.conf -b
-# wallpaper: ~/.config/i3/wallpaper (symlink, change it with Alt+Shift+w)
+# wallpaper: ~/.config/i3/wallpaper (symlink, troca com Alt+Shift+w)
 exec_always --no-startup-id feh --no-fehbg --bg-fill ~/.config/i3/wallpaper
 
 # ── visual ─────────────────────────────────────────────────────
-# thin border, no title bar, small gaps — gone when there is a single window
+# borda fina, sem título, gaps pequenos — some quando só tem 1 janela
 default_border pixel 2
 default_floating_border pixel 2
 for_window [class=".*"] border pixel 2
@@ -51,25 +51,25 @@ focus_follows_mouse no
 workspace_auto_back_and_forth yes
 title_align center
 
-#                       border   bg       text   indicator  child_border
+#                       borda    fundo    texto  indicador  borda_filho
 client.focused          $accent  $accent  $bg    $cyan      $accent
 client.focused_inactive $line    $bg2     $dim   $line      $line
 client.unfocused        $line    $bg      $dim   $line      $line
 client.urgent           $red     $red     $bg    $red       $red
 client.background       $bg
 
-# ── basics ─────────────────────────────────────────────────────
+# ── básico ─────────────────────────────────────────────────────
 floating_modifier $mod
 tiling_drag modifier titlebar
 bindsym $mod+Return exec $term
 bindsym $mod+Shift+Return exec kitty
 bindsym $mod+Ctrl+Return exec $term -e sh -c 'tmux new -A -s main'
 bindsym $mod+q kill
-# search: apps + open windows + commands, all in one list
-bindsym $mod+d exec --no-startup-id rofi -show combi -modes combi -combi-modes "drun,window,run" -combi-display-format "{text}" -theme ~/.config/rofi/underground.rasi
-# web (g/aw/aur/yt/gh/w + term) · calculator · emoji · clipboard
+# busca: apps + janelas abertas + comandos, tudo junto
+bindsym $mod+d exec --no-startup-id ~/.config/i3/scripts/launcher.sh
+# web (g/aw/aur/yt/gh/w + termo) · calculadora · emoji · clipboard
 bindsym $mod+o exec --no-startup-id ~/.config/i3/scripts/websearch.sh
-bindsym $mod+equal exec --no-startup-id rofi -show calc -modi calc -no-show-match -no-sort -calc-command "echo -n '{result}' | xclip -sel clip" -theme ~/.config/rofi/underground.rasi -theme-str 'entry{placeholder:"2+2, 10 usd to brl, 5 km to mi_";}'
+bindsym $mod+equal exec --no-startup-id ~/.config/i3/scripts/calc.sh
 bindsym $mod+period exec --no-startup-id rofimoji --action copy --selector-args="-theme ~/.config/rofi/underground.rasi"
 bindsym $mod+v exec --no-startup-id ~/.config/i3/scripts/clipboard.sh
 bindsym $mod+Shift+v exec --no-startup-id ~/.config/i3/scripts/clipboard.sh clear
@@ -77,17 +77,17 @@ bindsym $mod+Shift+w exec --no-startup-id ~/.config/i3/scripts/wallpaper.sh
 bindsym $mod+Shift+d exec --no-startup-id dmenu_run -p '>' -fn 'CaskaydiaCove Nerd Font-10' -nb '#101014' -nf '#6b6c78' -sb '#1793d1' -sf '#101014'
 bindsym $mod+Escape exec --no-startup-id ~/.config/i3/scripts/lock.sh
 
-# ── dropdowns (scratchpad): press = show, press again = hide ──
-# first press opens it in st, then it only toggles. sizes in % of the screen
+# ── dropdowns (scratchpad): aperta = mostra, aperta de novo = esconde ──
+# 1ª vez abre no st; depois só alterna. tamanhos pensados pro 3440x1440
 for_window [instance="^(claude|btop|notes|files|music|viz|irc|news)$"] floating enable, move scratchpad
-for_window [instance="^claude$"] resize set 50 ppt 70 ppt, move position center, scratchpad show
-for_window [instance="^btop$"]   resize set 55 ppt 70 ppt, move position center, scratchpad show
-for_window [instance="^notes$"]  resize set 35 ppt 60 ppt, move position center, scratchpad show
-for_window [instance="^files$"]  resize set 45 ppt 60 ppt, move position center, scratchpad show
-for_window [instance="^music$"]  resize set 45 ppt 60 ppt, move position center, scratchpad show
-for_window [instance="^viz$"]    resize set 95 ppt 20 ppt, move position center, scratchpad show
-for_window [instance="^irc$"]    resize set 50 ppt 70 ppt, move position center, scratchpad show
-for_window [instance="^news$"]   resize set 45 ppt 65 ppt, move position center, scratchpad show
+for_window [instance="^claude$"] resize set 1600 1000, move position center, scratchpad show
+for_window [instance="^btop$"]   resize set 1700 950,  move position center, scratchpad show
+for_window [instance="^notes$"]  resize set 1100 800,  move position center, scratchpad show
+for_window [instance="^files$"]  resize set 1500 850,  move position center, scratchpad show
+for_window [instance="^music$"]  resize set 1400 800,  move position center, scratchpad show
+for_window [instance="^viz$"]    resize set 3200 300,  move position 120 px 1100 px, scratchpad show
+for_window [instance="^irc$"]    resize set 1600 1000, move position center, scratchpad show
+for_window [instance="^news$"]   resize set 1500 950,  move position center, scratchpad show
 set $drop exec --no-startup-id ~/.config/i3/scripts/scratch.sh
 bindsym $mod+c       $drop claude claude
 bindsym $mod+t       $drop btop btop
@@ -97,13 +97,13 @@ bindsym $mod+m       $drop music ncspot
 bindsym $mod+Shift+m $drop viz cava
 bindsym $mod+i       $drop irc weechat
 bindsym $mod+Shift+n $drop news newsboat
-# claude in a regular tile
+# claude num tile normal
 bindsym $mod+Shift+c exec $term -e claude
 
-# keybind cheatsheet: lists everything in rofi, Enter runs it
+# cola de atalhos: lista tudo no rofi, Enter executa
 bindsym $mod+slash exec --no-startup-id ~/.config/i3/scripts/keys.sh
 
-# focus (vim + arrows)
+# foco (vim + setas)
 bindsym $mod+h focus left
 bindsym $mod+j focus down
 bindsym $mod+k focus up
@@ -113,7 +113,7 @@ bindsym $mod+Down focus down
 bindsym $mod+Up focus up
 bindsym $mod+Right focus right
 
-# move window
+# mover janela
 bindsym $mod+Shift+h move left
 bindsym $mod+Shift+j move down
 bindsym $mod+Shift+k move up
@@ -134,10 +134,10 @@ bindsym $mod+space floating toggle
 bindsym $mod+Shift+space focus mode_toggle
 bindsym $mod+a focus parent
 
-# gaps on/off: Alt+g
+# gaps na hora: Super+g liga/desliga
 bindsym $mod+g gaps inner current toggle 6
 
-# generic scratchpad
+# scratchpad genérico
 bindsym $mod+Shift+minus move scratchpad
 bindsym $mod+minus scratchpad show
 
@@ -164,7 +164,7 @@ bindsym $mod+8 workspace number $ws8
 bindsym $mod+9 workspace number $ws9
 bindsym $mod+0 workspace number $ws10
 bindsym $mod+Tab workspace back_and_forth
-# first empty workspace (with Ctrl the window comes along)
+# primeiro workspace vazio (com Ctrl leva a janela junto)
 bindsym $mod+Shift+Tab exec --no-startup-id ~/.config/i3/scripts/empty_workspace.sh
 bindsym $mod+Ctrl+Tab exec --no-startup-id ~/.config/i3/scripts/empty_workspace.sh move
 
@@ -179,29 +179,29 @@ bindsym $mod+Shift+8 move container to workspace number $ws8
 bindsym $mod+Shift+9 move container to workspace number $ws9
 bindsym $mod+Shift+0 move container to workspace number $ws10
 
-# ── media / volume / print ──────────────────────────────────────
+# ── mídia / volume / print ─────────────────────────────────────
 set $vol pkill -RTMIN+10 i3blocks
 bindsym XF86AudioRaiseVolume exec --no-startup-id pamixer -i 5 && $vol
 bindsym XF86AudioLowerVolume exec --no-startup-id pamixer -d 5 && $vol
 bindsym XF86AudioMute exec --no-startup-id pamixer -t && $vol
-# microphone: keyboard mic key or Alt+Shift+a · Alt+p picks the audio output
+# microfone: tecla de mic do teclado ou Alt+Shift+a · Alt+p escolhe a saída de áudio
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && pkill -RTMIN+11 i3blocks
 bindsym $mod+Shift+a exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && pkill -RTMIN+11 i3blocks
 bindsym $mod+p exec --no-startup-id ~/.config/i3/scripts/audio_menu.sh
-# caps/num in the bar update right away
+# caps/num na barra atualizam na hora
 bindsym --release Caps_Lock exec --no-startup-id pkill -RTMIN+12 i3blocks
 bindsym --release Num_Lock  exec --no-startup-id pkill -RTMIN+12 i3blocks
 bindsym XF86AudioPlay exec --no-startup-id playerctl play-pause
 bindsym XF86AudioNext exec --no-startup-id playerctl next
 bindsym XF86AudioPrev exec --no-startup-id playerctl previous
 
-# Print = full screen | Shift+Print = area (saved and copied)
-bindsym Print exec --no-startup-id sh -c 'mkdir -p ~/Pictures/Screenshots; f=~/Pictures/Screenshots/$(date +%F_%H-%M-%S).png; maim "$f" && xclip -sel clip -t image/png "$f"'
+# Print = tela inteira | Shift+Print = seleção (salva e copia)
+bindsym Print exec --no-startup-id ~/.config/i3/scripts/shot.sh full
 bindsym $mod+Shift+s exec --no-startup-id flameshot gui
-bindsym Shift+Print exec --no-startup-id sh -c 'mkdir -p ~/Pictures/Screenshots; f=~/Pictures/Screenshots/$(date +%F_%H-%M-%S).png; maim -s -c 0.09,0.58,0.82 "$f" && xclip -sel clip -t image/png "$f"'
+bindsym Shift+Print exec --no-startup-id ~/.config/i3/scripts/shot.sh area
 
-# ── apps pinned to workspaces ──────────────────────────────────────
-# 1 term · 2 web · 3 chat · 4 files · 5 games · 6 spotify
+# ── cada app no seu canto ──────────────────────────────────────
+# 1 term · 2 web · 3 chat · 4 arquivos · 5 jogos · 6 spotify
 assign [class="(?i)^(firefox|brave-browser|chromium|zen)$"] number $ws2
 assign [class="(?i)^(discord|vesktop|telegramdesktop)$"]  number $ws3
 assign [class="(?i)^(thunar|dolphin)$"]                     number $ws4
@@ -209,20 +209,20 @@ assign [class="(?i)^(steam|lutris|heroic)$"]                number $ws5
 for_window [class="(?i)^spotify$"] move container to workspace number $ws6
 for_window [class="(?i)^steam_app_"] move container to workspace number $ws5
 
-# ── window rules ────────────────────────────────────────────
+# ── regras de janela ───────────────────────────────────────────
 for_window [window_role="pop-up"] floating enable
 for_window [window_type="dialog"] floating enable
 for_window [class="Pavucontrol"] floating enable
 for_window [class="nm-connection-editor"] floating enable
-for_window [class="(?i)^(mpv|nsxiv)$"] floating enable, resize set 50 ppt 60 ppt, move position center
+for_window [class="(?i)^(mpv|nsxiv)$"] floating enable, resize set 1600 900, move position center
 
-# ── session (Alt+Shift+e → power menu in rofi) ──────────────────────────────
+# ── sessão (Alt+Shift+e → menu de energia no rofi) ──────────────────────────────
 bindsym $mod+Shift+x reload
 bindsym $mod+Shift+r restart
 
 bindsym $mod+Shift+e exec --no-startup-id ~/.config/i3/scripts/powermenu.sh
 
-# ── resize (Alt+r, hjkl/arrows, Esc leaves) ──────────────────────
+# ── resize (Super+r, hjkl/setas, Esc sai) ──────────────────────
 mode "resize" {
     bindsym h resize shrink width 10 px or 5 ppt
     bindsym j resize grow height 10 px or 5 ppt
@@ -237,9 +237,9 @@ mode "resize" {
 }
 bindsym $mod+r mode "resize"
 
-# ── bar ────────────────────────────────────────────────────────
+# ── barra ──────────────────────────────────────────────────────
 bar {
-    # i3blocks when installed, i3status otherwise
+    # i3blocks se tiver instalado; senão cai no i3status
     status_command sh -c 'command -v i3blocks >/dev/null && exec i3blocks -c ~/.config/i3blocks/config || exec i3status -c ~/.config/i3status/config'
     position top
     height 24
@@ -253,7 +253,7 @@ bar {
         background $bg
         statusline $dim
         separator  $line
-        #                  border   bg       text
+        #                  borda    fundo    texto
         focused_workspace  $accent  $accent  $bg
         active_workspace   $line    $bg2     $fg
         inactive_workspace $bg      $bg      $dim

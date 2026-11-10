@@ -1,7 +1,7 @@
 Xcursor.theme: Bibata-Modern-Ice
 Xcursor.size: 24
 
-! crisp fonts on X (96 dpi)
+! fonte nítida no X (3440x1440, 96 dpi)
 Xft.dpi: 96
 Xft.antialias: true
 Xft.hinting: true
@@ -9,7 +9,7 @@ Xft.hintstyle: hintslight
 Xft.rgba: rgb
 Xft.lcdfilter: lcddefault
 
-! ── UNDERGROUND // palette (st, nsxiv and anything else that reads Xresources) ──
+! ── UNDERGROUND // paleta (st, nsxiv e quem mais ler Xresources) ──
 *.foreground:  #d4d4dc
 *.background:  #101014
 *.cursorColor: #ffffff
@@ -30,7 +30,8 @@ Xft.lcdfilter: lcddefault
 *.color14: #4fd6e6
 *.color15: #ffffff
 
-st.font: CaskaydiaCove Nerd Font Mono:size=11:antialias=true:autohint=false
+st.font: CaskaydiaCove Nerd Font Mono:size=10:antialias=true:autohint=false
+st.alpha: 0.88
 st.reverse-cursor: #101014
 
 ! nsxiv

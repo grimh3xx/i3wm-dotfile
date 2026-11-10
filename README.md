@@ -20,13 +20,13 @@ plain i3 · patched suckless st · rofi · i3blocks · pure bash, no dependencie
 
 ---
 
-An i3 setup **with no frills**: no polybar, no blur, no animations, no rounded corners. Near-black background, Arch blue, thin borders, and the terminal for everything.
+An i3 setup **with no frills**: no polybar, no animations, no rounded corners. Just a soft blur behind a slightly translucent terminal, near-black background, Arch blue, thin borders, and the terminal for everything.
 A single bash script installs it. You pick components with **space** and confirm with **enter**. It shows the plan before touching anything, **backs up every file it replaces**, and can undo any run.
 
 ## What you get
 
 - **i3**: Alt as mod, vim keys, small gaps that disappear with a single window, kanji workspaces 一 二 三, apps pinned to workspaces, unfocused windows dimmed by picom.
-- **st (suckless)**: built from source with 8 patches: scrollback (with mouse), boxdraw, wide Nerd Font glyphs, Xresources colors with live reload, clipboard, `Ctrl+Shift+Enter` (new terminal in the same dir) and `Ctrl+Shift+U` (open links). Installed to `~/.local`, no root.
+- **st (suckless)**: built from source with 9 patches: scrollback (with mouse), boxdraw, wide Nerd Font glyphs, Xresources colors with live reload, alpha (translucent bg, `st.alpha` in Xresources), clipboard (`Ctrl+Shift+C` also grabs selections made by TUIs like Claude Code), `Ctrl+Shift+Enter` (new terminal in the same dir) and `Ctrl+Shift+U` (open links). Installed to `~/.local`, no root.
 - **Bar (i3blocks)**:
   - a rotating Anonymous (2011) quote
   - now playing, network, disk, RAM

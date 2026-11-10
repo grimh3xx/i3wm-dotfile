@@ -440,7 +440,7 @@ index 0000000..7890500
 +	/* U+2571 - U+2573: unsupported (diagonals) */
 +};
 diff --git a/config.def.h b/config.def.h
-index 2cd740a..971cb42 100644
+index 2cd740a..689380f 100644
 --- a/config.def.h
 +++ b/config.def.h
 @@ -67,6 +67,18 @@ static unsigned int blinktimeout = 800;
@@ -462,7 +462,17 @@ index 2cd740a..971cb42 100644
  /*
   * bell volume. It must be a value between -100 and 100. Use 0 for disabling
   * it
-@@ -176,6 +188,8 @@ static uint forcemousemod = ShiftMask;
+@@ -93,6 +105,9 @@ char *termname = "st-256color";
+  */
+ unsigned int tabspaces = 8;
+ 
++/* bg opacity */
++float alpha = 0.8;
++
+ /* Terminal colors (16 first used in escape sequence) */
+ static const char *colorname[] = {
+ 	/* 8 normal colors */
+@@ -176,6 +191,8 @@ static uint forcemousemod = ShiftMask;
   */
  static MouseShortcut mshortcuts[] = {
  	/* mask                 button   function        argument       release */
@@ -471,7 +481,7 @@ index 2cd740a..971cb42 100644
  	{ XK_ANY_MOD,           Button2, selpaste,       {.i = 0},      1 },
  	{ ShiftMask,            Button4, ttysend,        {.s = "\033[5;2~"} },
  	{ XK_ANY_MOD,           Button4, ttysend,        {.s = "\031"} },
-@@ -201,6 +215,9 @@ static Shortcut shortcuts[] = {
+@@ -201,6 +218,9 @@ static Shortcut shortcuts[] = {
  	{ TERMMOD,              XK_Y,           selpaste,       {.i =  0} },
  	{ ShiftMask,            XK_Insert,      selpaste,       {.i =  0} },
  	{ TERMMOD,              XK_Num_Lock,    numlock,        {.i =  0} },
@@ -1010,10 +1020,18 @@ index fd3b0d8..87be8b9 100644
  extern unsigned int defaultcs;
 +extern const int boxdraw, boxdraw_bold, boxdraw_braille;
 diff --git a/x.c b/x.c
-index bd23686..13894dc 100644
+index bd23686..1724dcb 100644
 --- a/x.c
 +++ b/x.c
-@@ -14,6 +14,7 @@
+@@ -5,6 +5,7 @@
+ #include <locale.h>
+ #include <signal.h>
+ #include <sys/select.h>
++#include <sys/wait.h>
+ #include <time.h>
+ #include <unistd.h>
+ #include <libgen.h>
+@@ -14,6 +15,7 @@
  #include <X11/keysym.h>
  #include <X11/Xft/Xft.h>
  #include <X11/XKBlib.h>
@@ -1021,7 +1039,15 @@ index bd23686..13894dc 100644
  
  char *argv0;
  #include "arg.h"
-@@ -142,7 +143,7 @@ typedef struct {
+@@ -105,6 +107,7 @@ typedef struct {
+ 	XSetWindowAttributes attrs;
+ 	int scr;
+ 	int isfixed; /* is fixed geometry? */
++	int depth; /* bit depth */
+ 	int l, t; /* left and top offset */
+ 	int gm; /* geometry mask */
+ } XWindow;
+@@ -142,7 +145,7 @@ typedef struct {
  
  static inline ushort sixd_to_16bit(int);
  static int xmakeglyphfontspecs(XftGlyphFontSpec *, const Glyph *, int, int, int);
@@ -1030,7 +1056,32 @@ index bd23686..13894dc 100644
  static void xdrawglyph(Glyph, int, int);
  static void xclear(int, int, int, int);
  static int xgeommasktogravity(int);
-@@ -686,6 +687,7 @@ setsel(char *str, Time t)
+@@ -259,6 +262,24 @@ clipcopy(const Arg *dummy)
+ {
+ 	Atom clipboard;
+ 
++	/* a TUI doing its own mouse selection (e.g. Claude Code) owns PRIMARY:
++	 * mirror that selection into CLIPBOARD instead of our stale one */
++	if (XGetSelectionOwner(xw.dpy, XA_PRIMARY) != xw.win) {
++		pid_t p = fork();
++		if (p == 0) {
++			if (fork() == 0) {
++				setsid();
++				execlp("sh", "sh", "-c",
++					"xclip -o -selection primary 2>/dev/null | xclip -i -selection clipboard",
++					(char *)NULL);
++			}
++			_exit(0);
++		} else if (p > 0) {
++			waitpid(p, NULL, 0);
++		}
++		return;
++	}
++
+ 	free(xsel.clipboard);
+ 	xsel.clipboard = NULL;
+ 
+@@ -686,6 +707,7 @@ setsel(char *str, Time t)
  	XSetSelectionOwner(xw.dpy, XA_PRIMARY, xw.win, t);
  	if (XGetSelectionOwner(xw.dpy, XA_PRIMARY) != xw.win)
  		selclear();
@@ -1038,7 +1089,103 @@ index bd23686..13894dc 100644
  }
  
  void
-@@ -1237,6 +1239,8 @@ xinit(int cols, int rows)
+@@ -752,7 +774,7 @@ xresize(int col, int row)
+ 
+ 	XFreePixmap(xw.dpy, xw.buf);
+ 	xw.buf = XCreatePixmap(xw.dpy, xw.win, win.w, win.h,
+-			DefaultDepth(xw.dpy, xw.scr));
++			xw.depth);
+ 	XftDrawChange(xw.draw, xw.buf);
+ 	xclear(0, 0, win.w, win.h);
+ 
+@@ -812,6 +834,10 @@ xloadcols(void)
+ 			else
+ 				die("could not allocate color %d\n", i);
+ 		}
++
++	dc.col[defaultbg].color.alpha = (unsigned short)(0xffff * alpha);
++	dc.col[defaultbg].pixel &= 0x00FFFFFF;
++	dc.col[defaultbg].pixel |= (unsigned char)(0xff * alpha) << 24;
+ 	loaded = 1;
+ }
+ 
+@@ -842,6 +868,12 @@ xsetcolorname(int x, const char *name)
+ 	XftColorFree(xw.dpy, xw.vis, xw.cmap, &dc.col[x]);
+ 	dc.col[x] = ncolor;
+ 
++	if (x == defaultbg) {
++		dc.col[defaultbg].color.alpha = (unsigned short)(0xffff * alpha);
++		dc.col[defaultbg].pixel &= 0x00FFFFFF;
++		dc.col[defaultbg].pixel |= (unsigned char)(0xff * alpha) << 24;
++	}
++
+ 	return 0;
+ }
+ 
+@@ -1131,14 +1163,28 @@ xinit(int cols, int rows)
+ {
+ 	XGCValues gcvalues;
+ 	Cursor cursor;
+-	Window parent;
++	Window parent, root;
+ 	pid_t thispid = getpid();
+ 	XColor xmousefg, xmousebg;
++	XWindowAttributes attr;
++	XVisualInfo vis;
+ 
+ 	if (!(xw.dpy = XOpenDisplay(NULL)))
+ 		die("can't open display\n");
+ 	xw.scr = XDefaultScreen(xw.dpy);
+-	xw.vis = XDefaultVisual(xw.dpy, xw.scr);
++
++	root = XRootWindow(xw.dpy, xw.scr);
++	if (!(opt_embed && (parent = strtol(opt_embed, NULL, 0))))
++		parent = root;
++
++	if (XMatchVisualInfo(xw.dpy, xw.scr, 32, TrueColor, &vis) != 0) {
++		xw.vis = vis.visual;
++		xw.depth = vis.depth;
++	} else {
++		XGetWindowAttributes(xw.dpy, parent, &attr);
++		xw.vis = attr.visual;
++		xw.depth = attr.depth;
++	}
+ 
+ 	/* font */
+ 	if (!FcInit())
+@@ -1148,7 +1194,7 @@ xinit(int cols, int rows)
+ 	xloadfonts(usedfont, 0);
+ 
+ 	/* colors */
+-	xw.cmap = XDefaultColormap(xw.dpy, xw.scr);
++	xw.cmap = XCreateColormap(xw.dpy, parent, xw.vis, None);
+ 	xloadcols();
+ 
+ 	/* adjust fixed window geometry */
+@@ -1168,19 +1214,17 @@ xinit(int cols, int rows)
+ 		| ButtonMotionMask | ButtonPressMask | ButtonReleaseMask;
+ 	xw.attrs.colormap = xw.cmap;
+ 
+-	if (!(opt_embed && (parent = strtol(opt_embed, NULL, 0))))
+-		parent = XRootWindow(xw.dpy, xw.scr);
+ 	xw.win = XCreateWindow(xw.dpy, parent, xw.l, xw.t,
+-			win.w, win.h, 0, XDefaultDepth(xw.dpy, xw.scr), InputOutput,
++			win.w, win.h, 0, xw.depth, InputOutput,
+ 			xw.vis, CWBackPixel | CWBorderPixel | CWBitGravity
+ 			| CWEventMask | CWColormap, &xw.attrs);
+ 
+ 	memset(&gcvalues, 0, sizeof(gcvalues));
+ 	gcvalues.graphics_exposures = False;
+-	dc.gc = XCreateGC(xw.dpy, parent, GCGraphicsExposures,
++	dc.gc = XCreateGC(xw.dpy, xw.win, GCGraphicsExposures,
+ 			&gcvalues);
+ 	xw.buf = XCreatePixmap(xw.dpy, xw.win, win.w, win.h,
+-			DefaultDepth(xw.dpy, xw.scr));
++			xw.depth);
+ 	XSetForeground(xw.dpy, dc.gc, dc.col[defaultbg].pixel);
+ 	XFillRectangle(xw.dpy, xw.buf, dc.gc, 0, 0, win.w, win.h);
+ 
+@@ -1237,6 +1281,8 @@ xinit(int cols, int rows)
  	xsel.xtarget = XInternAtom(xw.dpy, "UTF8_STRING", 0);
  	if (xsel.xtarget == None)
  		xsel.xtarget = XA_STRING;
@@ -1047,7 +1194,7 @@ index bd23686..13894dc 100644
  }
  
  int
-@@ -1283,8 +1287,13 @@ xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len, int x
+@@ -1283,8 +1329,13 @@ xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len, int x
  			yp = winy + font->ascent;
  		}
  
@@ -1063,7 +1210,7 @@ index bd23686..13894dc 100644
  		if (glyphidx) {
  			specs[numspecs].font = font->match;
  			specs[numspecs].glyph = glyphidx;
-@@ -1372,7 +1381,7 @@ xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len, int x
+@@ -1372,7 +1423,7 @@ xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len, int x
  }
  
  void
@@ -1072,7 +1219,7 @@ index bd23686..13894dc 100644
  {
  	int charlen = len * ((base.mode & ATTR_WIDE) ? 2 : 1);
  	int winx = borderpx + x * win.cw, winy = borderpx + y * win.ch,
-@@ -1412,10 +1421,6 @@ xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len, int x, i
+@@ -1412,10 +1463,6 @@ xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len, int x, i
  		bg = &dc.col[base.bg];
  	}
  
@@ -1083,7 +1230,7 @@ index bd23686..13894dc 100644
  	if (IS_SET(MODE_REVERSE)) {
  		if (fg == &dc.col[defaultfg]) {
  			fg = &dc.col[defaultbg];
-@@ -1463,47 +1468,45 @@ xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len, int x, i
+@@ -1463,47 +1510,45 @@ xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len, int x, i
  	if (base.mode & ATTR_INVISIBLE)
  		fg = bg;
  
@@ -1168,7 +1315,7 @@ index bd23686..13894dc 100644
  }
  
  void
-@@ -1513,7 +1516,7 @@ xdrawglyph(Glyph g, int x, int y)
+@@ -1513,7 +1558,7 @@ xdrawglyph(Glyph g, int x, int y)
  	XftGlyphFontSpec spec;
  
  	numspecs = xmakeglyphfontspecs(&spec, &g, 1, x, y);
@@ -1177,7 +1324,7 @@ index bd23686..13894dc 100644
  }
  
  void
-@@ -1532,7 +1535,7 @@ xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og)
+@@ -1532,7 +1577,7 @@ xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og)
  	/*
  	 * Select the right color for the right mode.
  	 */
@@ -1186,7 +1333,7 @@ index bd23686..13894dc 100644
  
  	if (IS_SET(MODE_REVERSE)) {
  		g.mode |= ATTR_REVERSE;
-@@ -1654,32 +1657,39 @@ xstartdraw(void)
+@@ -1654,32 +1699,39 @@ xstartdraw(void)
  void
  xdrawline(Line line, int x1, int y1, int x2)
  {
@@ -1249,7 +1396,7 @@ index bd23686..13894dc 100644
  }
  
  void
-@@ -2020,6 +2030,118 @@ run(void)
+@@ -2020,6 +2072,119 @@ run(void)
  	}
  }
  
@@ -1339,6 +1486,7 @@ index bd23686..13894dc 100644
 +
 +		XRESOURCE_LOAD_FLOAT("cwscale", cwscale);
 +		XRESOURCE_LOAD_FLOAT("chscale", chscale);
++		XRESOURCE_LOAD_FLOAT("alpha", alpha);
 +	}
 +	XFlush(dpy);
 +}
@@ -1368,7 +1516,18 @@ index bd23686..13894dc 100644
  void
  usage(void)
  {
-@@ -2093,6 +2215,8 @@ run:
+@@ -2044,6 +2209,10 @@ main(int argc, char *argv[])
+ 	case 'a':
+ 		allowaltscreen = 0;
+ 		break;
++	case 'A':
++		alpha = strtof(EARGF(usage()), NULL);
++		LIMIT(alpha, 0.0, 1.0);
++		break;
+ 	case 'c':
+ 		opt_class = EARGF(usage());
+ 		break;
+@@ -2093,6 +2262,8 @@ run:
  
  	setlocale(LC_CTYPE, "");
  	XSetLocaleModifiers("");
