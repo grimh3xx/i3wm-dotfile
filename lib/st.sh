@@ -11,7 +11,11 @@ ST_SRC="${XDG_DATA_HOME:-$HOME/.local/share}/underground-i3/st"
 st_install() {
   step "st $ST_TAG (suckless) + patches underground"
   local p
-  for p in git make cc pkg-config; do have "$p" || die "needs '$p' (install base-devel and git)"; done
+  for p in git make cc pkg-config; do
+    have "$p" && continue
+    ((UG_DRY)) && { warn "needs '$p' (base-devel/git) — installed by the core step"; continue; }
+    die "needs '$p' (install base-devel and git)"
+  done
 
   if [[ -d $ST_SRC/.git ]]; then
     run git -C "$ST_SRC" fetch -q --depth 1 origin "refs/tags/$ST_TAG:refs/tags/$ST_TAG"

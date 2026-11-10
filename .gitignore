@@ -6,3 +6,5 @@
 # imagens com direitos autorais nunca entram no repo (o script baixa na sua máquina)
 **/logos/linus.png
 **/logos/fsociety.png
+# gerado na instalação (symlink pro wallpaper escolhido)
+dotfiles/.config/i3/wallpaper

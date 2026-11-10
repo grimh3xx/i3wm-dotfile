@@ -29,10 +29,14 @@ install_aur_helper() {
   aur_helper >/dev/null && return 0
   warn "no AUR helper (paru/yay) found"
   ask "install paru-bin now?" || return 1
+  if ((UG_DRY)); then
+    info "[dry-run] would build paru-bin from the AUR (git clone + makepkg -si)"
+    return 0
+  fi
   local tmp
   tmp=$(mktemp -d)
-  run git clone --depth 1 https://aur.archlinux.org/paru-bin.git "$tmp/paru-bin"
-  ( cd "$tmp/paru-bin" && run makepkg -si --noconfirm )
+  git clone --depth 1 https://aur.archlinux.org/paru-bin.git "$tmp/paru-bin"
+  ( cd "$tmp/paru-bin" && makepkg -si --noconfirm )
   rm -rf "$tmp"
 }
 
