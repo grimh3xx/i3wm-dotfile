@@ -1,0 +1,67 @@
+# UNDERGROUND // dunst — só no i3 (dunst -config ~/.config/dunst-i3/dunstrc)
+[global]
+    monitor = 0
+    follow = keyboard
+    origin = top-right
+    offset = (12, 36)
+    width = (280, 420)
+    height = (0, 160)
+    notification_limit = 5
+    gap_size = 6
+    padding = 10
+    horizontal_padding = 12
+    text_icon_padding = 10
+    frame_width = 2
+    separator_height = 0
+    corner_radius = 0
+    progress_bar = true
+    progress_bar_height = 6
+    progress_bar_frame_width = 0
+    progress_bar_corner_radius = 0
+
+    font = CaskaydiaCove Nerd Font 10
+    markup = full
+    format = "<span foreground='#1793d1'>[%a]</span> <b>%s</b>\n%b"
+    alignment = left
+    vertical_alignment = center
+    show_age_threshold = 60
+    ellipsize = middle
+    ignore_newline = no
+    stack_duplicates = true
+    hide_duplicate_count = false
+    show_indicators = no
+
+    icon_position = left
+    min_icon_size = 24
+    max_icon_size = 32
+    icon_theme = Tela-circle-cyan
+    enable_recursive_icon_lookup = true
+
+    sticky_history = yes
+    history_length = 30
+    dmenu = /usr/bin/rofi -dmenu -p dunst -theme ~/.config/rofi/underground.rasi
+    browser = /usr/bin/xdg-open
+    mouse_left_click = do_action, close_current
+    mouse_middle_click = close_all
+    mouse_right_click = close_current
+
+[urgency_low]
+    background = "#101014"
+    foreground = "#6b6c78"
+    frame_color = "#26272f"
+    highlight = "#22c7d8"
+    timeout = 4
+
+[urgency_normal]
+    background = "#101014"
+    foreground = "#d4d4dc"
+    frame_color = "#1793d1"
+    highlight = "#22c7d8"
+    timeout = 6
+
+[urgency_critical]
+    background = "#101014"
+    foreground = "#e06c75"
+    frame_color = "#e06c75"
+    highlight = "#e06c75"
+    timeout = 0

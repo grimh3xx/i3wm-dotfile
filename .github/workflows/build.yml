@@ -1,0 +1,28 @@
+name: build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: shellcheck
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck
+          make lint
+
+  test:
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    steps:
+      - name: dependências
+        run: pacman -Syu --noconfirm --needed bash git make shellcheck i3-wm diffutils findutils
+      - uses: actions/checkout@v4
+      - name: testes (como usuário comum)
+        run: |
+          useradd -m tester
+          chown -R tester "$GITHUB_WORKSPACE"
+          su tester -c "cd '$GITHUB_WORKSPACE' && bash tests/run.sh"

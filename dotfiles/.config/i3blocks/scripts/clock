@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# clique: mostra o calendário numa notificação
+[[ $BLOCK_BUTTON == 1 ]] && notify-send -a cal "$(date '+%B %Y')" "<tt>$(cal | tail -n +2)</tt>"
+echo "<span color='#6b6c78'>$(date '+%a %d/%m')</span> <b>$(date '+%H:%M')</b>"

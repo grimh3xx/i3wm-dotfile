@@ -1,0 +1,36 @@
+# UNDERGROUND // newsboat
+auto-reload yes
+reload-time 30
+reload-threads 4
+show-read-feeds yes
+browser "setsid -f xdg-open %u >/dev/null 2>&1"
+articlelist-format "%4i %f %D  %?T?|%-17T|  ?%t"
+feedlist-format "%4i %n %11u  %t"
+datetime-format "%d/%m"
+text-width 100
+
+# vim
+bind-key j down
+bind-key k up
+bind-key J next-feed articlelist
+bind-key K prev-feed articlelist
+bind-key G end
+bind-key g home
+bind-key l open
+bind-key h quit
+bind-key d pagedown
+bind-key u pageup
+
+color background         default   default
+color listnormal         color8    default
+color listfocus          color0    color4    bold
+color listnormal_unread  color7    default
+color listfocus_unread   color0    color4    bold
+color title              color0    color4    bold
+color info               color0    color4    bold
+color hint-key           color6    default   bold
+color hint-keys-delimiter color8   default
+color hint-description   color8    default
+color article            color7    default
+highlight article "^(Feed|Title|Author|Link|Date):" color6 default bold
+highlight article "https?://[^ ]+" color4 default underline

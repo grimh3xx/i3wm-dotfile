@@ -1,0 +1,25 @@
+# UNDERGROUND // cava
+[general]
+framerate = 60
+bars = 0
+bar_width = 2
+bar_spacing = 1
+sensitivity = 100
+
+[input]
+method = pulse
+source = auto
+
+[output]
+method = noncurses
+
+[color]
+background = default
+gradient = 1
+gradient_color_1 = '#17181f'
+gradient_color_2 = '#1793d1'
+gradient_color_3 = '#22c7d8'
+gradient_color_4 = '#ffffff'
+
+[smoothing]
+noise_reduction = 77

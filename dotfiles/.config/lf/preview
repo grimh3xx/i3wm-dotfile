@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# preview do lf: texto com highlight, pasta listada, resto mostra o tipo
+f=$1
+case $(file --mime-type -Lb "$f") in
+  text/*|application/json) command -v bat >/dev/null && bat --color=always --style=plain --paging=never "$f" || head -200 "$f" ;;
+  application/zip) unzip -l "$f" ;;
+  application/x-tar|application/gzip|application/x-xz|application/zstd) tar tf "$f" 2>/dev/null | head -200 ;;
+  application/pdf) pdftotext -l 3 "$f" - 2>/dev/null | head -200 || file -b "$f" ;;
+  *) file -b "$f"; du -h "$f" | cut -f1 ;;
+esac

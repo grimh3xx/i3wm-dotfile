@@ -1,0 +1,46 @@
+# UNDERGROUND // lf — gerenciador de arquivos no terminal
+set hidden false
+set icons true
+set drawbox true
+set ratios 1:2:3
+set scrolloff 8
+set info size
+set dircounts true
+set cursorpreviewfmt "\033[7m"
+set promptfmt "\033[1;31m%u\033[1;31m@%h\033[0m \033[1;36m%d\033[0m\033[1m%f\033[0m"
+set previewer ~/.config/lf/preview
+set shell bash
+set shellopts '-eu'
+set ifs "\n"
+
+# abrir: texto no nano, resto no app padrão
+cmd open ${{
+  case $(file --mime-type -Lb "$f") in
+    text/*|application/json|inode/x-empty) nano "$f" ;;
+    *) for x in $fx; do setsid -f xdg-open "$x" >/dev/null 2>&1; done ;;
+  esac
+}}
+cmd mkdir %mkdir -p "$(echo $*)"
+cmd touch %touch "$(echo $*)"
+cmd trash %mkdir -p ~/.local/share/Trash/files && mv -- $fx ~/.local/share/Trash/files/
+cmd extract ${{
+  case "$f" in
+    *.tar.*|*.tar|*.tgz) tar xf "$f" ;;
+    *.zip) unzip "$f" ;;
+    *.7z) 7z x "$f" ;;
+    *.rar) unrar x "$f" ;;
+  esac
+}}
+
+map . set hidden!
+map a push :touch<space>
+map A push :mkdir<space>
+map D trash
+map x extract
+map <enter> open
+map gh cd ~
+map gd cd ~/Downloads
+map gp cd ~/Pictures
+map gc cd ~/.config
+map gs cd ~/.local/src
+map Y $printf '%s' "$f" | xclip -sel clip

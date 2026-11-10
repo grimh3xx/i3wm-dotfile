@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# interface padrão: wifi mostra o SSID, cabo mostra o IP. clique = copia o IP
+dev=$(ip route show default 2>/dev/null | awk '{print $5; exit}')
+[[ -z $dev ]] && { echo "<span color='#e06c75'>󰖪 offline</span>"; exit 0; }
+ip4=$(ip -4 -o addr show "$dev" | awk '{print $4}' | cut -d/ -f1 | head -1)
+[[ $BLOCK_BUTTON == 1 ]] && printf %s "$ip4" | xclip -sel clip
+if [[ -d /sys/class/net/$dev/wireless ]]; then
+  ssid=$(iw dev "$dev" link 2>/dev/null | awk -F': ' '/SSID/{print $2}')
+  [[ -z $ssid ]] && ssid=$(nmcli -t -f active,ssid dev wifi 2>/dev/null | awk -F: '$1=="yes"{print $2}')
+  (( ${#ssid} > 20 )) && ssid="${ssid:0:19}…"
+  echo "<span color='#22c7d8'>󰖩</span> ${ssid//&/&amp;}"
+else
+  echo "<span color='#22c7d8'>󰈀</span> $ip4"
+fi

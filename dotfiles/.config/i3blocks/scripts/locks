@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# caps/num lock — só aparece quando está ligado. sinal 12
+q=$(xset -q 2>/dev/null)
+out=""
+grep -q 'Caps Lock: *on' <<<"$q" && out+="<span color='#101014' background='#d8a657'> CAPS </span> "
+grep -q 'Num Lock: *on'  <<<"$q" && out+="<span color='#101014' background='#1793d1'> NUM </span>"
+echo "$out"

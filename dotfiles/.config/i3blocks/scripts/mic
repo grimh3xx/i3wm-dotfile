@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# microfone: clique = muta/desmuta · direito = pavucontrol (aba entrada). sinal 11
+case $BLOCK_BUTTON in
+  1) pactl set-source-mute @DEFAULT_SOURCE@ toggle ;;
+  3) (pavucontrol -t 4 >/dev/null 2>&1 &) ;;
+esac
+if [[ $(pactl get-source-mute @DEFAULT_SOURCE@ 2>/dev/null) == *yes* ]]; then
+  echo "<span color='#e06c75'>󰍭 mic off</span>"
+else
+  v=$(pactl get-source-volume @DEFAULT_SOURCE@ | grep -oE '[0-9]+%' | head -1)
+  echo "<span color='#22c7d8'>󰍬</span> $v"
+fi

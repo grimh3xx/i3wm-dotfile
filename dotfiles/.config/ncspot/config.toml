@@ -1,0 +1,27 @@
+# UNDERGROUND // ncspot — spotify no terminal (precisa de Spotify Premium)
+use_nerdfont = true
+flip_status_indicators = false
+notify = true
+gapless = true
+library_tabs = ["tracks", "albums", "artists", "playlists", "browse"]
+statusbar_format = "%artists - %title"
+
+[theme]
+background = "#101014"
+primary = "#d4d4dc"
+secondary = "#6b6c78"
+title = "#1793d1"
+playing = "#22c7d8"
+playing_selected = "#101014"
+playing_bg = "#101014"
+highlight = "#101014"
+highlight_bg = "#1793d1"
+highlight_inactive_bg = "#26272f"
+error = "#101014"
+error_bg = "#e06c75"
+statusbar = "#101014"
+statusbar_progress = "#1793d1"
+statusbar_bg = "#1793d1"
+cmdline = "#d4d4dc"
+cmdline_bg = "#101014"
+search_match = "#22c7d8"

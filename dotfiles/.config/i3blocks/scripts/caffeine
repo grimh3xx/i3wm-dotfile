@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# caffeine: clique liga/desliga. ligado = tela não apaga nem trava sozinha
+state=/tmp/caffeine-$UID
+if [[ $BLOCK_BUTTON == 1 ]]; then
+  if [[ -f $state ]]; then rm -f "$state"; xset s 480 480 dpms 600 600 600
+  else touch "$state"; xset s off -dpms; fi
+fi
+if [[ -f $state ]]; then echo "<span color='#d8a657'>󰅶 awake</span>"
+else echo "<span color='#6b6c78'>󰛊</span>"; fi

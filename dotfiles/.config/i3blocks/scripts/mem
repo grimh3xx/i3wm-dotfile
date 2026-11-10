@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+awk '/MemTotal/{t=$2} /MemAvailable/{a=$2} END{u=(t-a)/1048576; p=100*(t-a)/t; c=(p>90)?"#e06c75":(p>75)?"#d8a657":"#d4d4dc"; printf "<span color=\"#22c7d8\"></span> <span color=\"%s\">%.1fG</span>\n", c, u}' /proc/meminfo
