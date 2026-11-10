@@ -20,7 +20,7 @@ dotfiles_install() {
       n_new=$((n_new + 1)); continue
     fi
     run mkdir -p -- "$(dirname "$dst")"
-    if [[ $UG_MODE == link ]]; then run ln -s -- "$f" "$dst"; else run cp -p -- "$f" "$dst"; fi
+    if [[ $UG_MODE == link ]]; then run ln -s -- "$f" "$dst"; else run cp -P -p -- "$f" "$dst"; fi
     # shellcheck disable=SC2088
     ((UG_DRY)) || info "~/$rel"
     n_new=$((n_new + 1))

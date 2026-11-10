@@ -115,7 +115,7 @@ def main(out):
                 return False
             if not data:
                 return False
-            data = data.replace(b"/home/itz", HOME_FAKE.encode())
+            data = data.replace(os.path.expanduser("~").encode(), HOME_FAKE.encode())
             if per_line:
                 parts = data.split(b"\n")
                 for i, p in enumerate(parts):

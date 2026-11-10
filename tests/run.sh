@@ -75,7 +75,8 @@ fresh_home
 t "install full --dry-run" "$BIN" --dry-run --yes install full
 
 echo "== segurança: nada pessoal no repo"
-t "sem /home/<usuário> fixo" bash -c "! grep -rIn '/home/[a-z]' '$ROOT/dotfiles' '$ROOT/lib' '$ROOT/underground-i3'"
+t "sem /home/<usuário> fixo" bash -c "! grep -rIn '/home/[a-z]' '$ROOT/dotfiles' '$ROOT/lib' '$ROOT/underground-i3' '$ROOT/tools' | grep -v '/home/you'"
+t "nenhum symlink dentro de dotfiles/" bash -c "[[ -z \$(find '$ROOT/dotfiles' -type l -print -quit) ]]"
 
 echo
 printf '%d ok · %d falha(s)\n' "$pass" "$fail"
